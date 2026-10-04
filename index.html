@@ -165,9 +165,17 @@
 <body class="relative antialiased selection:bg-white selection:text-black">
 
     <div id="bg-container" class="absolute inset-0 z-0">
+        <!-- DUAS CAMADAS DE IMAGEM PARA TRANSIÇÃO SUAVE -->
         <img id="bg-img-1" class="bg-layer opacity-100" src="" alt="" decoding="async">
         <img id="bg-img-2" class="bg-layer opacity-0" src="" alt="" decoding="async">
+        
+        <!-- VÍDEO LOCAL MP4 -->
         <video id="bg-video" class="bg-layer opacity-0 object-cover w-full h-full absolute inset-0 z-0 transition-opacity duration-1000" autoplay loop muted playsinline></video>
+        
+        <!-- DUAS CAMADAS DE IFRAME PARA TRANSIÇÃO SUAVE (VIMEO/YOUTUBE) -->
+        <iframe id="bg-iframe-1" class="bg-layer opacity-0 w-full h-full absolute inset-0 z-0 transition-opacity duration-1000 pointer-events-none" style="transform: scale(1.35);" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+        <iframe id="bg-iframe-2" class="bg-layer opacity-0 w-full h-full absolute inset-0 z-0 transition-opacity duration-1000 pointer-events-none" style="transform: scale(1.35);" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+        
         <div class="overlay"></div>
     </div>
 
@@ -175,7 +183,7 @@
         
         <header class="p-8 md:p-12 absolute top-0 left-0 w-full flex justify-between items-center z-30 pointer-events-auto">
             <div class="text-xs tracking-[0.3em] uppercase font-light">Ronã <br> <span class="font-bold">Grangeiro</span></div>
-            <div class="text-xs tracking-widest uppercase font-light">Portifólio</div>
+            <div class="text-xs tracking-widest uppercase font-light">Portfólio</div>
         </header>
 
         <main class="flex-1 relative w-full md:w-2/3 h-full mask-vertical z-20">
@@ -197,40 +205,61 @@
                 projects: [
                     { 
                         name: "libervita", 
-                        images: [
-                            "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop",
-                            "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1976&auto=format&fit=crop"
-                        ] 
+                        mediaList: [
+                            { type: "iframe", url: "https://player.vimeo.com/video/1232821697?background=1&autoplay=1&loop=1&byline=0&title=0" }
+                    ]
                     },
                     { 
                         name: "micélio", 
-                        images: [
-                            "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1920&auto=format&fit=crop",
-                            "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop"
-                        ] 
+                       mediaList: [
+                            { type: "iframe", url: "https://player.vimeo.com/video/1232823704?background=1&autoplay=1&loop=1&byline=0&title=0" }
+                    ]
                     }
                 ]
             },
             {
-                categoryTitle: "VIDEOCLIPE",
-                projects: [
-                    { 
-                        name: "stand-it", 
-                        images: [
-                            "https://i.pinimg.com/1200x/51/b8/ff/51b8ff73bc4d4591e0e29303b284f302.jpg",
-                            "https://i.pinimg.com/originals/ed/36/d0/ed36d0b629f4f85f9154325992f6a736.gif"
-                        ] 
-                    }
-                ]
+               categoryTitle: "VIDEOCLIPE",
+               projects: [
+                 {
+                   name: "stand-it",
+                   iframeUrl: "https://www.youtube.com/embed/UCikCB24d5o?autoplay=1&mute=1&controls=0&loop=1&playlist=UCikCB24d5o"
+                 }
+               ]
             },
             {
                 categoryTitle: "CURTA-METRAGEM",
                 projects: [
                     { 
                         name: "sonhos", 
-                        images: [
-			   "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/e6587e255939661.6aae2f9dae7a4.jpg"
+                        // Sequência: 2 vídeos do Vimeo seguidos pela imagem
+                        mediaList: [
+                            { type: "iframe", url: "https://player.vimeo.com/video/1232816820?background=1&autoplay=1&loop=1&byline=0&title=0", time: 1700 },
+                            { type: "iframe", url: "https://player.vimeo.com/video/1232818057?background=1&autoplay=1&loop=1&byline=0&title=0", time: 2000 },
+                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/abe8af256645443.6ac2ae49d470b.png", time: 2000 },
+                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/1f5756256645443.6ac2ae49d5288.png", time: 2000 },
+                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/9dd99e256645443.6ac2ae49d5eae.png", time: 2000 },
+                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/680a43256645443.6ac2ae49d5844.png", time: 2000 },
+                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/a0bb56256645443.6ac2ae49d4d52.png", time: 2000 }
+
                         ] 
+                    },
+                    {
+                        name: "matando",
+                        images: [
+                            "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop"
+                        ]
+                    },
+                    {
+                        name: "supercurta",
+                        iframeUrls: [
+                            { url: "https://player.vimeo.com/video/1232808341?background=1&autoplay=1&loop=1&byline=0&title=0", time: 2000 }
+                        ]
+                    },
+                    {
+                        name: "angor",
+                        iframeUrls: [
+                            { url: "https://player.vimeo.com/video/1232806609?background=1&autoplay=1&loop=1&byline=0&title=0", time: 3000 }
+                        ]
                     }
                 ]
             },
@@ -240,28 +269,28 @@
                     { 
                         name: "kyan", 
                         images: [
-			    "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d04585214797941.675ee8bae7825.jpg",
-			    "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d9e3a7214797941.675ee8bae7da0.jpg",
-			    "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/083b49214797941.675ee8baea749.jpg",
-			    "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/4886bc214797941.675ee8baea0ee.jpg",
-			    "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/e46f92214797941.675ee8bae82f7.jpg"
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d04585214797941.675ee8bae7825.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d9e3a7214797941.675ee8bae7da0.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/083b49214797941.675ee8baea749.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/4886bc214797941.675ee8baea0ee.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/e46f92214797941.675ee8bae82f7.jpg"
                         ] 
                     },
                     { 
-		      	name: "matuê",
-		        images: [
-				"https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/0b246a228875229.685ac730a5e63.jpg",
-			    "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/b3c8da228875229.685ac730a501c.jpeg
-			] 
-		    },
+                        name: "matuê", 
+                        images: [
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/0b246a228875229.685ac730a5e63.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/b3c8da228875229.685ac730a501c.jpeg"
+                        ] 
+                    },
                     { 
                         name: "sá e guarabyra", 
                         images: [
-			    "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/a268db228219853.684f7786821cd.jpg",
-			    "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/05f3e0228219853.684f778680c1e.jpg",
-			    "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/7097de228219853.684f7786845cf.jpg",
-			    "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/cd2a65228219853.684f778684d70.jpg",
-			    "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/18a07f228219853.684f778681293.jpg"
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/a268db228219853.684f7786821cd.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/05f3e0228219853.684f778680c1e.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/7097de228219853.684f7786845cf.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/cd2a65228219853.684f778684d70.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/18a07f228219853.684f778681293.jpg"
                         ]
                     },
                     { 
@@ -270,7 +299,7 @@
                             { url: "VINO.gif", time: 3000 },
                             { url: "VINO_1.jpg", time: 3000 },
                             { url: "VINO_2.jpg", time: 3000 }
-                            ]
+                        ]
                     },
                     { 
                         name: "danzo", 
@@ -279,8 +308,8 @@
                             { url: "DANZO_2.jpg", time: 3000 }
                         ]
                     }
-                ] // <-- ESTE COLCHETE ESTAVA FALTANDO PARA FECHAR OS "projects"
-            }, // <-- ESTA CHAVE ESTAVA FALTANDO PARA FECHAR A CATEGORIA "SHOW"
+                ] 
+            }, 
             {
                 categoryTitle: "DOCUMENTÁRIO",
                 projects: [
@@ -319,10 +348,10 @@
         let currentProjIndex = 0;
         let currentImageIndex = 0;
         let activeBgLayer = 1;
+        let activeIframeLayer = 1;
         let slideTimeout; 
         let isAnimatingScroll = false;
 
-        // IDs para gerir downloads e temporizadores sem causar misturas
         let currentImageRequest = 0;
         let slideStateId = 0;
 
@@ -330,6 +359,8 @@
         const bgImg1 = document.getElementById('bg-img-1');
         const bgImg2 = document.getElementById('bg-img-2');
         const bgVideo = document.getElementById('bg-video');
+        const bgIframe1 = document.getElementById('bg-iframe-1');
+        const bgIframe2 = document.getElementById('bg-iframe-2');
         const counterEl = document.getElementById('project-counter');
         const nameDisplayEl = document.getElementById('project-name-display');
 
@@ -443,25 +474,108 @@
             const proj = portfolioData[currentCatIndex].projects[pIndex];
             
             currentImageIndex = 0; 
-            
-            if (proj.videoLocal) {
+
+            // Se for lista sequencial mista (vídeos + fotos)
+            if (proj.mediaList && proj.mediaList.length > 0) {
+                renderMediaItem(proj.mediaList[0]);
+                startSlideshow();
+                return;
+            }
+
+            // Modo padrão
+            const isIframe = (proj.iframeUrls && proj.iframeUrls.length > 0) || proj.iframeUrl;
+            const isVideo = !!proj.videoLocal;
+            const isImage = proj.images && proj.images.length > 0;
+
+            if (!isVideo) {
+                bgVideo.classList.remove('opacity-100'); 
+                bgVideo.classList.add('opacity-0');
+                setTimeout(() => { if (bgVideo.classList.contains('opacity-0')) bgVideo.pause(); }, 1000);
+            }
+            if (!isIframe) {
+                bgIframe1.classList.remove('opacity-100'); 
+                bgIframe1.classList.add('opacity-0');
+                bgIframe2.classList.remove('opacity-100'); 
+                bgIframe2.classList.add('opacity-0');
+                setTimeout(() => { 
+                    if (bgIframe1.classList.contains('opacity-0')) bgIframe1.src = "";
+                    if (bgIframe2.classList.contains('opacity-0')) bgIframe2.src = "";
+                }, 1000);
+            }
+            if (!isImage) {
+                bgImg1.classList.remove('opacity-100'); 
+                bgImg1.classList.add('opacity-0');
+                bgImg2.classList.remove('opacity-100'); 
+                bgImg2.classList.add('opacity-0');
+            }
+
+            if (proj.iframeUrls && proj.iframeUrls.length > 0) {
+                const firstData = proj.iframeUrls[0];
+                const firstUrl = typeof firstData === 'string' ? firstData : firstData.url;
+                changeIframe(firstUrl);
+                startSlideshow();
+            } 
+            else if (proj.iframeUrl) {
+                changeIframe(proj.iframeUrl);
+            } 
+            else if (proj.videoLocal) {
                 if (!bgVideo.src.endsWith(proj.videoLocal)) {
                     bgVideo.src = proj.videoLocal;
                 }
+                bgVideo.play();
                 bgVideo.classList.remove('opacity-0');
                 bgVideo.classList.add('opacity-100');
-            } else {
-                bgVideo.classList.remove('opacity-100');
-                bgVideo.classList.add('opacity-0');
-                setTimeout(() => { 
-                    if (bgVideo.classList.contains('opacity-0')) bgVideo.src = ""; 
-                }, 1000);
-                
+            } 
+            else if (proj.images && proj.images.length > 0) {
                 const firstImg = proj.images[0];
                 const firstUrl = typeof firstImg === 'string' ? firstImg : firstImg.url;
-                
                 changeImage(firstUrl);
                 startSlideshow();
+            }
+        }
+
+        function renderMediaItem(media) {
+            if (media.type === "iframe") {
+                changeIframe(media.url);
+                bgImg1.classList.remove('opacity-100'); bgImg1.classList.add('opacity-0');
+                bgImg2.classList.remove('opacity-100'); bgImg2.classList.add('opacity-0');
+            } else if (media.type === "image") {
+                changeImage(media.url);
+                bgIframe1.classList.remove('opacity-100'); bgIframe1.classList.add('opacity-0');
+                bgIframe2.classList.remove('opacity-100'); bgIframe2.classList.add('opacity-0');
+                setTimeout(() => {
+                    if (bgIframe1.classList.contains('opacity-0')) bgIframe1.src = "";
+                    if (bgIframe2.classList.contains('opacity-0')) bgIframe2.src = "";
+                }, 1000);
+            }
+        }
+
+        function changeIframe(url) {
+            currentImageRequest++;
+            const requestId = currentImageRequest;
+
+            if (activeIframeLayer === 1) {
+                bgIframe2.onload = () => {
+                    if (requestId !== currentImageRequest) return;
+                    bgIframe2.classList.remove('opacity-0');
+                    bgIframe2.classList.add('opacity-100');
+                    bgIframe1.classList.remove('opacity-100');
+                    bgIframe1.classList.add('opacity-0');
+                    setTimeout(() => { if(activeIframeLayer === 2) bgIframe1.src = ""; }, 1500);
+                };
+                bgIframe2.src = url;
+                activeIframeLayer = 2;
+            } else {
+                bgIframe1.onload = () => {
+                    if (requestId !== currentImageRequest) return;
+                    bgIframe1.classList.remove('opacity-0');
+                    bgIframe1.classList.add('opacity-100');
+                    bgIframe2.classList.remove('opacity-100');
+                    bgIframe2.classList.add('opacity-0');
+                    setTimeout(() => { if(activeIframeLayer === 1) bgIframe2.src = ""; }, 1500);
+                };
+                bgIframe1.src = url;
+                activeIframeLayer = 1;
             }
         }
 
@@ -496,7 +610,11 @@
             const pIndex = currentProjIndex >= 0 ? currentProjIndex : 0;
             const proj = portfolioData[currentCatIndex].projects[pIndex];
             
-            if (!proj.videoLocal && proj.images.length > 1) {
+            const hasMultiple = (proj.mediaList && proj.mediaList.length > 1) ||
+                                (proj.images && proj.images.length > 1) || 
+                                (proj.iframeUrls && proj.iframeUrls.length > 1);
+
+            if (hasMultiple) {
                 scheduleNextImage(slideStateId);
             }
         }
@@ -504,19 +622,42 @@
         function scheduleNextImage(stateId) {
             const pIndex = currentProjIndex >= 0 ? currentProjIndex : 0;
             const proj = portfolioData[currentCatIndex].projects[pIndex];
-            const currentImgData = proj.images[currentImageIndex];
             
-            const duration = currentImgData.time || 4000;
+            let mediaList = [];
+            let isMediaListMode = false;
+            let isIframeMode = false;
+
+            if (proj.mediaList && proj.mediaList.length > 1) {
+                mediaList = proj.mediaList;
+                isMediaListMode = true;
+            } else if (proj.iframeUrls && proj.iframeUrls.length > 1) {
+                mediaList = proj.iframeUrls;
+                isIframeMode = true;
+            } else if (proj.images && proj.images.length > 1) {
+                mediaList = proj.images;
+            }
+
+            if (!mediaList || mediaList.length <= 1) return;
+
+            const currentMediaData = mediaList[currentImageIndex];
+            const duration = currentMediaData.time || 4000;
 
             slideTimeout = setTimeout(() => {
                 if (stateId !== slideStateId) return;
 
-                currentImageIndex = (currentImageIndex + 1) % proj.images.length;
-                const nextImgData = proj.images[currentImageIndex];
+                currentImageIndex = (currentImageIndex + 1) % mediaList.length;
+                const nextMediaData = mediaList[currentImageIndex];
+
+                if (isMediaListMode) {
+                    renderMediaItem(nextMediaData);
+                } else if (isIframeMode) {
+                    const nextUrl = typeof nextMediaData === 'string' ? nextMediaData : nextMediaData.url;
+                    changeIframe(nextUrl);
+                } else {
+                    const nextUrl = typeof nextMediaData === 'string' ? nextMediaData : nextMediaData.url;
+                    changeImage(nextUrl);
+                }
                 
-                const nextUrl = typeof nextImgData === 'string' ? nextImgData : nextImgData.url;
-                
-                changeImage(nextUrl);
                 scheduleNextImage(stateId); 
             }, duration);
         }
@@ -596,14 +737,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initList();
-            
-            const firstProj = portfolioData[0].projects[0];
-            const firstImgData = firstProj.images[0];
-            const firstUrl = typeof firstImgData === 'string' ? firstImgData : firstImgData.url;
-            
-            if (!firstProj.videoLocal) {
-                changeImage(firstUrl);
-            }
             
             setTimeout(() => {
                 updateRoulettePosition();
