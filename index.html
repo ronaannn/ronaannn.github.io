@@ -32,6 +32,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     
+    <!-- SCRIPT OFICIAL DO VIMEO PARA FORÇAR AUTOPLAY -->
+    <script src="https://player.vimeo.com/api/player.js"></script>
+
     <style>
         body, html {
             margin: 0;
@@ -149,7 +152,6 @@
             will-change: opacity;
         }
         
-        /* Nova Classe para forçar Iframes a preencher a tela inteira com corte estilo object-fit cover */
         .iframe-cover {
             position: absolute;
             top: 50%;
@@ -183,9 +185,9 @@
         <img id="bg-img-2" class="bg-layer opacity-0" src="" alt="" decoding="async">
         
         <!-- VÍDEO LOCAL MP4 -->
-        <video id="bg-video" class="bg-layer opacity-0 object-cover w-full h-full absolute inset-0 z-0 transition-opacity duration-1000" autoplay loop muted playsinline webkit-playsinline></video>
+        <video id="bg-video" class="bg-layer opacity-0 object-cover w-full h-full absolute inset-0 z-0 transition-opacity duration-1000" autoplay loop muted playsinline></video>
         
-        <!-- DUAS CAMADAS DE IFRAME PARA TRANSIÇÃO SUAVE COM A NOVA CLASSE DE COVER -->
+        <!-- DUAS CAMADAS DE IFRAME PARA TRANSIÇÃO SUAVE -->
         <iframe id="bg-iframe-1" class="bg-layer iframe-cover opacity-0 z-0 transition-opacity duration-1000" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
         <iframe id="bg-iframe-2" class="bg-layer iframe-cover opacity-0 z-0 transition-opacity duration-1000" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
         
@@ -244,7 +246,6 @@
                 projects: [
                     { 
                         name: "sonhos", 
-                        // Sequência: 2 vídeos do Vimeo seguidos pela imagem
                         mediaList: [
                             { type: "iframe", url: "https://player.vimeo.com/video/1232816820?background=1&autoplay=1&loop=1&byline=0&title=0", time: 1700 },
                             { type: "iframe", url: "https://player.vimeo.com/video/1232818057?background=1&autoplay=1&loop=1&byline=0&title=0", time: 2000 },
@@ -477,14 +478,23 @@
             }
         }
         
-        // Esta função injeta mute e playsinline para garantir que roda no celular!
+        // Reconstrutor de URL reforçado para iOS Safari e Android
         function applyMobileAutoplay(url) {
             if (!url) return "";
-            let safeUrl = url;
-            if (!safeUrl.includes("playsinline=1")) {
-                safeUrl += safeUrl.includes("?") ? "&playsinline=1&muted=1&mute=1&autopause=0" : "?playsinline=1&muted=1&mute=1&autopause=0";
+            try {
+                let urlObj = new URL(url);
+                urlObj.searchParams.set("background", "1");
+                urlObj.searchParams.set("muted", "1");
+                urlObj.searchParams.set("playsinline", "1");
+                urlObj.searchParams.set("autopause", "0");
+                return urlObj.toString();
+            } catch (e) {
+                // Prevenção caso o link seja passado em outro formato
+                if (!url.includes("playsinline=1")) {
+                    return url + (url.includes("?") ? "&playsinline=1&muted=1&autopause=0&background=1" : "?playsinline=1&muted=1&autopause=0&background=1");
+                }
+                return url;
             }
-            return safeUrl;
         }
 
         function playMedia() {
@@ -496,39 +506,32 @@
             const proj = portfolioData[currentCatIndex].projects[pIndex];
             
             currentImageIndex = 0; 
-            
-            // Pausa sempre o background de video e limpa todas as camadas preventivamente
-            bgVideo.classList.remove('opacity-100'); 
-            bgVideo.classList.add('opacity-0');
+
+            // Pausar/Ocultar todos preventivamente
+            bgVideo.classList.remove('opacity-100'); bgVideo.classList.add('opacity-0');
             setTimeout(() => { if (bgVideo.classList.contains('opacity-0')) bgVideo.pause(); }, 1000);
 
-            // Se for lista sequencial mista (vídeos + fotos)
             if (proj.mediaList && proj.mediaList.length > 0) {
                 renderMediaItem(proj.mediaList[0]);
                 startSlideshow();
                 return;
             }
 
-            // Modo padrão
             const isIframe = (proj.iframeUrls && proj.iframeUrls.length > 0) || proj.iframeUrl;
             const isVideo = !!proj.videoLocal;
             const isImage = proj.images && proj.images.length > 0;
 
             if (!isIframe) {
-                bgIframe1.classList.remove('opacity-100'); 
-                bgIframe1.classList.add('opacity-0');
-                bgIframe2.classList.remove('opacity-100'); 
-                bgIframe2.classList.add('opacity-0');
+                bgIframe1.classList.remove('opacity-100'); bgIframe1.classList.add('opacity-0');
+                bgIframe2.classList.remove('opacity-100'); bgIframe2.classList.add('opacity-0');
                 setTimeout(() => { 
                     if (bgIframe1.classList.contains('opacity-0')) bgIframe1.src = "";
                     if (bgIframe2.classList.contains('opacity-0')) bgIframe2.src = "";
                 }, 1000);
             }
             if (!isImage) {
-                bgImg1.classList.remove('opacity-100'); 
-                bgImg1.classList.add('opacity-0');
-                bgImg2.classList.remove('opacity-100'); 
-                bgImg2.classList.add('opacity-0');
+                bgImg1.classList.remove('opacity-100'); bgImg1.classList.add('opacity-0');
+                bgImg2.classList.remove('opacity-100'); bgImg2.classList.add('opacity-0');
             }
 
             if (proj.iframeUrls && proj.iframeUrls.length > 0) {
@@ -575,30 +578,32 @@
         function changeIframe(url) {
             currentImageRequest++;
             const requestId = currentImageRequest;
-            
-            // Adiciona regras de playsinline para rodar em Mobile Safari
             const safeUrl = applyMobileAutoplay(url);
 
+            const handleLoad = (iframeIn, iframeOut, layerIn, layerOut) => {
+                if (requestId !== currentImageRequest) return;
+                iframeIn.classList.remove('opacity-0');
+                iframeIn.classList.add('opacity-100');
+                iframeOut.classList.remove('opacity-100');
+                iframeOut.classList.add('opacity-0');
+                
+                // Força o play nativo pela API oficial do Vimeo assim que estiver visível
+                if (safeUrl.includes('vimeo')) {
+                    try {
+                        const player = new Vimeo.Player(iframeIn);
+                        player.play().catch(()=>{});
+                    } catch(e) {}
+                }
+
+                setTimeout(() => { if(activeIframeLayer === layerIn) iframeOut.src = ""; }, 1500);
+            };
+
             if (activeIframeLayer === 1) {
-                bgIframe2.onload = () => {
-                    if (requestId !== currentImageRequest) return;
-                    bgIframe2.classList.remove('opacity-0');
-                    bgIframe2.classList.add('opacity-100');
-                    bgIframe1.classList.remove('opacity-100');
-                    bgIframe1.classList.add('opacity-0');
-                    setTimeout(() => { if(activeIframeLayer === 2) bgIframe1.src = ""; }, 1500);
-                };
+                bgIframe2.onload = () => handleLoad(bgIframe2, bgIframe1, 2, 1);
                 bgIframe2.src = safeUrl;
                 activeIframeLayer = 2;
             } else {
-                bgIframe1.onload = () => {
-                    if (requestId !== currentImageRequest) return;
-                    bgIframe1.classList.remove('opacity-0');
-                    bgIframe1.classList.add('opacity-100');
-                    bgIframe2.classList.remove('opacity-100');
-                    bgIframe2.classList.add('opacity-0');
-                    setTimeout(() => { if(activeIframeLayer === 1) bgIframe2.src = ""; }, 1500);
-                };
+                bgIframe1.onload = () => handleLoad(bgIframe1, bgIframe2, 1, 2);
                 bgIframe1.src = safeUrl;
                 activeIframeLayer = 1;
             }
@@ -760,12 +765,20 @@
             }
         }
 
-        // Função de clique em qualquer lugar ativando play para soltar qualquer bloqueio residual de touch do navegador (ajuda o autoplay mobile)
-        document.body.addEventListener('touchstart', function() {
+        // Função Global de Destrave de Autoplay: Ao tocar em qualquer lugar da tela, os bloqueios do celular são cancelados.
+        document.body.addEventListener('touchstart', () => {
             if (bgVideo && bgVideo.paused && bgVideo.classList.contains('opacity-100')) {
                 bgVideo.play().catch(()=>{});
             }
-        }, { once: true });
+            try {
+                if (bgIframe1.classList.contains('opacity-100') && bgIframe1.src.includes('vimeo')) {
+                    new Vimeo.Player(bgIframe1).play().catch(()=>{});
+                }
+                if (bgIframe2.classList.contains('opacity-100') && bgIframe2.src.includes('vimeo')) {
+                    new Vimeo.Player(bgIframe2).play().catch(()=>{});
+                }
+            } catch(e) {}
+        }, { passive: true });
 
         document.addEventListener('DOMContentLoaded', () => {
             initList();
