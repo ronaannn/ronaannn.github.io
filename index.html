@@ -4,35 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Título Principal -->
     <title>Ronã Grangeiro | DOP</title>
     
-    <!-- Otimização para Motores de Busca (SEO) -->
     <meta name="description" content="Portfólio audiovisual 2026">
     <meta name="author" content="Ronã Grangeiro">
 
-    <!-- Open Graph / Redes Sociais -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://ronaannn.github.io/">
-    <meta property="og:title" content="Ronã Grangeiro | DOP">
-    <meta property="og:description" content="Portfólio audiovisual 2026">
-    <meta property="og:image" content="https://ronaannn.github.io/1_2.1.1.png">
+    <!-- Preconnects para acelerar o carregamento do Vimeo e Imagens -->
+    <link rel="preconnect" href="https://player.vimeo.com">
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- Twitter Cards -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Ronã Grangeiro | DOP">
-    <meta name="twitter:description" content="Portfólio audiovisual 2026">
-    <meta name="twitter:image" content="https://ronaannn.github.io/1_2.1.1.png">
+    <!-- Preload da primeira imagem para aparecer instantaneamente -->
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=60&w=1280&auto=format&fit=crop">
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     
-    <!-- SCRIPT OFICIAL DO VIMEO PARA FORÇAR AUTOPLAY -->
+    <!-- SCRIPT OFICIAL DO VIMEO -->
     <script src="https://player.vimeo.com/api/player.js"></script>
 
     <style>
@@ -59,13 +50,8 @@
             transform-origin: left center;
             will-change: transform, opacity; 
         }
-        .roulette-item.active {
-            opacity: 1;
-        }
-        .roulette-item:hover:not(.active) {
-            opacity: 0.5;
-            cursor: pointer;
-        }
+        .roulette-item.active { opacity: 1; }
+        .roulette-item:hover:not(.active) { opacity: 0.5; cursor: pointer; }
 
         .sub-projects {
             max-height: 0;
@@ -92,13 +78,8 @@
             transition: color 0.3s ease, padding-left 0.3s ease;
             cursor: pointer;
         }
-        .sub-project-item.active-sub {
-            color: #fff;
-            padding-left: 1rem; 
-        }
-        .sub-project-item:hover:not(.active-sub) {
-            color: #ccc;
-        }
+        .sub-project-item.active-sub { color: #fff; padding-left: 1rem; }
+        .sub-project-item:hover:not(.active-sub) { color: #ccc; }
 
         @keyframes tremble {
             0%, 100% { transform: translateX(0) rotate(0); }
@@ -121,14 +102,8 @@
             transform-origin: left center;
             animation: tremble 6s infinite; 
         }
-        .sub-project-item.contact-item.active-sub {
-            color: #fff;
-            padding-left: 1.2rem;
-            font-weight: 500; 
-        }
-        .sub-project-item.contact-item:hover:not(.active-sub) {
-            color: #eee;
-        }
+        .sub-project-item.contact-item.active-sub { color: #fff; padding-left: 1.2rem; font-weight: 500; }
+        .sub-project-item.contact-item:hover:not(.active-sub) { color: #eee; }
 
         #roulette-list {
             transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
@@ -157,9 +132,9 @@
             top: 50%;
             left: 50%;
             width: 100vw;
-            height: 56.25vw; /* Ratio 16:9 */
+            height: 56.25vw;
             min-height: 100vh;
-            min-width: 177.77vh; /* Ratio 16:9 inverso para retrato */
+            min-width: 177.77vh;
             transform: translate(-50%, -50%);
             pointer-events: none;
         }
@@ -180,14 +155,12 @@
 <body class="relative antialiased selection:bg-white selection:text-black">
 
     <div id="bg-container" class="absolute inset-0 z-0 overflow-hidden">
-        <!-- DUAS CAMADAS DE IMAGEM PARA TRANSIÇÃO SUAVE -->
+        <!-- O atributo loading="lazy" ajuda mídias futuras, e decoding="async" não trava a tela -->
         <img id="bg-img-1" class="bg-layer opacity-100" src="" alt="" decoding="async">
         <img id="bg-img-2" class="bg-layer opacity-0" src="" alt="" decoding="async">
         
-        <!-- VÍDEO LOCAL MP4 -->
         <video id="bg-video" class="bg-layer opacity-0 object-cover w-full h-full absolute inset-0 z-0 transition-opacity duration-1000" autoplay loop muted playsinline></video>
         
-        <!-- DUAS CAMADAS DE IFRAME PARA TRANSIÇÃO SUAVE -->
         <iframe id="bg-iframe-1" class="bg-layer iframe-cover opacity-0 z-0 transition-opacity duration-1000" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
         <iframe id="bg-iframe-2" class="bg-layer iframe-cover opacity-0 z-0 transition-opacity duration-1000" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
         
@@ -237,7 +210,11 @@
                projects: [
                  {
                    name: "stand-it",
-                   iframeUrl: "https://www.youtube.com/embed/UCikCB24d5o?autoplay=1&mute=1&controls=0&loop=1&playlist=UCikCB24d5o"
+                   iframeUrl: "https://player.vimeo.com/video/1232829974?background=1&autoplay=1&loop=1&byline=0&title=0"
+                 },
+                  {
+                   name: "fabgodam",
+                   iframeUrl: "https://player.vimeo.com/video/1232829093?background=1&autoplay=1&loop=1&byline=0&title=0"
                  }
                ]
             },
@@ -247,7 +224,7 @@
                     { 
                         name: "sonhos", 
                         mediaList: [
-                            { type: "iframe", url: "https://player.vimeo.com/video/1232816820?background=1&autoplay=1&loop=1&byline=0&title=0", time: 1700 },
+                            { type: "iframe", url: "https://player.vimeo.com/video/1232816820?background=1&autoplay=1&loop=1&byline=0&title=0", time: 1800 },
                             { type: "iframe", url: "https://player.vimeo.com/video/1232818057?background=1&autoplay=1&loop=1&byline=0&title=0", time: 2000 },
                             { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/abe8af256645443.6ac2ae49d470b.png", time: 2000 },
                             { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/1f5756256645443.6ac2ae49d5288.png", time: 2000 },
@@ -259,7 +236,7 @@
                     {
                         name: "matando",
                         images: [
-                            "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop"
+                            "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=60&w=1280&auto=format&fit=crop"
                         ]
                     },
                     {
@@ -329,8 +306,8 @@
                     { 
                         name: "pertencer", 
                         images: [
-                            "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2070&auto=format&fit=crop",
-                            "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=2070&auto=format&fit=crop"
+                            "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=60&w=1280&auto=format&fit=crop",
+                            "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=60&w=1280&auto=format&fit=crop"
                         ] 
                     }
                 ]
@@ -341,17 +318,17 @@
                     { 
                         name: "whatsapp (11) 97508-5574", 
                         link: "https://wa.me/5511975085574", 
-                        images: ["https://images.unsplash.com/photo-1596726229983-6f4a869801be?q=80&w=2070&auto=format&fit=crop"] 
+                        images: ["https://images.unsplash.com/photo-1596726229983-6f4a869801be?q=60&w=1280&auto=format&fit=crop"] 
                     },
                     { 
                         name: "e-mail: ronan15pc@hotmail.com", 
                         link: "mailto:ronan15pc@hotmail.com", 
-                        images: ["https://images.unsplash.com/photo-1596726229983-6f4a869801be?q=80&w=2070&auto=format&fit=crop"] 
+                        images: ["https://images.unsplash.com/photo-1596726229983-6f4a869801be?q=60&w=1280&auto=format&fit=crop"] 
                     },
                     { 
                         name: "@ronannronan", 
                         link: "https://instagram.com/ronannronan", 
-                        images: ["https://images.unsplash.com/photo-1596726229983-6f4a869801be?q=80&w=2070&auto=format&fit=crop"] 
+                        images: ["https://images.unsplash.com/photo-1596726229983-6f4a869801be?q=60&w=1280&auto=format&fit=crop"] 
                     }
                 ]
             }
@@ -478,7 +455,6 @@
             }
         }
         
-        // Reconstrutor de URL reforçado para iOS Safari e Android
         function applyMobileAutoplay(url) {
             if (!url) return "";
             try {
@@ -489,7 +465,6 @@
                 urlObj.searchParams.set("autopause", "0");
                 return urlObj.toString();
             } catch (e) {
-                // Prevenção caso o link seja passado em outro formato
                 if (!url.includes("playsinline=1")) {
                     return url + (url.includes("?") ? "&playsinline=1&muted=1&autopause=0&background=1" : "?playsinline=1&muted=1&autopause=0&background=1");
                 }
@@ -507,7 +482,6 @@
             
             currentImageIndex = 0; 
 
-            // Pausar/Ocultar todos preventivamente
             bgVideo.classList.remove('opacity-100'); bgVideo.classList.add('opacity-0');
             setTimeout(() => { if (bgVideo.classList.contains('opacity-0')) bgVideo.pause(); }, 1000);
 
@@ -587,7 +561,6 @@
                 iframeOut.classList.remove('opacity-100');
                 iframeOut.classList.add('opacity-0');
                 
-                // Força o play nativo pela API oficial do Vimeo assim que estiver visível
                 if (safeUrl.includes('vimeo')) {
                     try {
                         const player = new Vimeo.Player(iframeIn);
@@ -765,7 +738,6 @@
             }
         }
 
-        // Função Global de Destrave de Autoplay: Ao tocar em qualquer lugar da tela, os bloqueios do celular são cancelados.
         document.body.addEventListener('touchstart', () => {
             if (bgVideo && bgVideo.paused && bgVideo.classList.contains('opacity-100')) {
                 bgVideo.play().catch(()=>{});
