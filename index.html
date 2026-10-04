@@ -9,21 +9,29 @@
     <meta name="description" content="Portfólio audiovisual 2026">
     <meta name="author" content="Ronã Grangeiro">
 
-    <!-- Preconnects para acelerar o carregamento do Vimeo e Imagens -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ronaannn.github.io/">
+    <meta property="og:title" content="Ronã Grangeiro | DOP">
+    <meta property="og:description" content="Portfólio audiovisual 2026">
+    <meta property="og:image" content="https://ronaannn.github.io/1_2.1.1.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ronã Grangeiro | DOP">
+    <meta name="twitter:description" content="Portfólio audiovisual 2026">
+    <meta name="twitter:image" content="https://ronaannn.github.io/1_2.1.1.png">
+
+    <link rel="icon" type="image/png" href="favicon.png">
+
     <link rel="preconnect" href="https://player.vimeo.com">
     <link rel="preconnect" href="https://images.unsplash.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- Preload da primeira imagem para aparecer instantaneamente -->
     <link rel="preload" as="image" href="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=60&w=1280&auto=format&fit=crop">
-
-    <link rel="icon" type="image/png" href="favicon.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     
-    <!-- SCRIPT OFICIAL DO VIMEO -->
     <script src="https://player.vimeo.com/api/player.js"></script>
 
     <style>
@@ -155,7 +163,6 @@
 <body class="relative antialiased selection:bg-white selection:text-black">
 
     <div id="bg-container" class="absolute inset-0 z-0 overflow-hidden">
-        <!-- O atributo loading="lazy" ajuda mídias futuras, e decoding="async" não trava a tela -->
         <img id="bg-img-1" class="bg-layer opacity-100" src="" alt="" decoding="async">
         <img id="bg-img-2" class="bg-layer opacity-0" src="" alt="" decoding="async">
         
@@ -224,7 +231,7 @@
                     { 
                         name: "sonhos", 
                         mediaList: [
-                            { type: "iframe", url: "https://player.vimeo.com/video/1232816820?background=1&autoplay=1&loop=1&byline=0&title=0", time: 1800 },
+                            { type: "iframe", url: "https://player.vimeo.com/video/1232816820?background=1&autoplay=1&loop=1&byline=0&title=0", time: 1800, position: "80% center" },
                             { type: "iframe", url: "https://player.vimeo.com/video/1232818057?background=1&autoplay=1&loop=1&byline=0&title=0", time: 2000 },
                             { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/abe8af256645443.6ac2ae49d470b.png", time: 2000 },
                             { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/1f5756256645443.6ac2ae49d5288.png", time: 2000 },
@@ -261,43 +268,30 @@
                         images: [
                             "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d04585214797941.675ee8bae7825.jpg",
                             "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d9e3a7214797941.675ee8bae7da0.jpg",
-                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/083b49214797941.675ee8baea749.jpg",
-                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/4886bc214797941.675ee8baea0ee.jpg",
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/083b49214797941.675ee8baea749.jpg", time: 3000, position: "75% center" },
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/4886bc214797941.675ee8baea0ee.jpg", time: 3000, position: "25% center" },
                             "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/e46f92214797941.675ee8bae82f7.jpg"
                         ] 
                     },
                     { 
                         name: "matuê", 
-                        images: [
+                        images: [   
                             "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/0b246a228875229.685ac730a5e63.jpg",
                             "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/b3c8da228875229.685ac730a501c.jpeg"
                         ] 
                     },
                     { 
                         name: "sá e guarabyra", 
+                        // AQUI ESTÁ A CORREÇÃO: As imagens foram transformadas em objetos com 'position'
                         images: [
-                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/a268db228219853.684f7786821cd.jpg",
-                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/05f3e0228219853.684f778680c1e.jpg",
-                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/7097de228219853.684f7786845cf.jpg",
-                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/cd2a65228219853.684f778684d70.jpg",
-                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/18a07f228219853.684f778681293.jpg"
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/a268db228219853.684f7786821cd.jpg", time: 3000, position: "80% center" },
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/05f3e0228219853.684f778680c1e.jpg", time: 3000, position: "70% center" },
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/7097de228219853.684f7786845cf.jpg", time: 3000, position: "30% center" },
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/cd2a65228219853.684f778684d70.jpg", time: 3000, position: "80% center" },
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/18a07f228219853.684f778681293.jpg", time: 3000, position: "80% center" }
                         ]
                     },
-                    { 
-                        name: "yunk vino", 
-                        images: [
-                            { url: "VINO.gif", time: 3000 },
-                            { url: "VINO_1.jpg", time: 3000 },
-                            { url: "VINO_2.jpg", time: 3000 }
-                        ]
-                    },
-                    { 
-                        name: "danzo", 
-                        images: [
-                            { url: "DANZO_1.jpg", time: 3000 },
-                            { url: "DANZO_2.jpg", time: 3000 }
-                        ]
-                    }
+
                 ] 
             }, 
             {
@@ -528,7 +522,8 @@
             else if (proj.images && proj.images.length > 0) {
                 const firstImg = proj.images[0];
                 const firstUrl = typeof firstImg === 'string' ? firstImg : firstImg.url;
-                changeImage(firstUrl);
+                const firstPos = typeof firstImg === 'object' && firstImg.position ? firstImg.position : 'center';
+                changeImage(firstUrl, firstPos);
                 startSlideshow();
             }
         }
@@ -539,7 +534,7 @@
                 bgImg1.classList.remove('opacity-100'); bgImg1.classList.add('opacity-0');
                 bgImg2.classList.remove('opacity-100'); bgImg2.classList.add('opacity-0');
             } else if (media.type === "image") {
-                changeImage(media.url);
+                changeImage(media.url, media.position);
                 bgIframe1.classList.remove('opacity-100'); bgIframe1.classList.add('opacity-0');
                 bgIframe2.classList.remove('opacity-100'); bgIframe2.classList.add('opacity-0');
                 setTimeout(() => {
@@ -582,7 +577,7 @@
             }
         }
 
-        function changeImage(url) {
+        function changeImage(url, position = 'center') {
             currentImageRequest++;
             const requestId = currentImageRequest;
 
@@ -590,7 +585,10 @@
             img.onload = () => {
                 if (requestId !== currentImageRequest) return;
 
+                const pos = position || 'center';
+
                 if (activeBgLayer === 1) {
+                    bgImg2.style.objectPosition = pos;
                     bgImg2.src = url;
                     bgImg2.classList.remove('opacity-0');
                     bgImg2.classList.add('opacity-100');
@@ -598,6 +596,7 @@
                     bgImg1.classList.add('opacity-0');
                     activeBgLayer = 2;
                 } else {
+                    bgImg1.style.objectPosition = pos;
                     bgImg1.src = url;
                     bgImg1.classList.remove('opacity-0');
                     bgImg1.classList.add('opacity-100');
@@ -658,7 +657,8 @@
                     changeIframe(nextUrl);
                 } else {
                     const nextUrl = typeof nextMediaData === 'string' ? nextMediaData : nextMediaData.url;
-                    changeImage(nextUrl);
+                    const nextPos = typeof nextMediaData === 'object' && nextMediaData.position ? nextMediaData.position : 'center';
+                    changeImage(nextUrl, nextPos);
                 }
                 
                 scheduleNextImage(stateId); 
@@ -755,10 +755,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             initList();
             
-            setTimeout(() => {
-                updateRoulettePosition();
-                playMedia();
-            }, 100);
+            updateRoulettePosition();
+            playMedia();
         });
 
         window.addEventListener('resize', updateRoulettePosition);
