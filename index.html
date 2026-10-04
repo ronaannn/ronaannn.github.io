@@ -148,6 +148,19 @@
             object-fit: cover;
             will-change: opacity;
         }
+        
+        /* Nova Classe para forçar Iframes a preencher a tela inteira com corte estilo object-fit cover */
+        .iframe-cover {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 56.25vw; /* Ratio 16:9 */
+            min-height: 100vh;
+            min-width: 177.77vh; /* Ratio 16:9 inverso para retrato */
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
 
         .overlay {
             position: absolute;
@@ -164,17 +177,17 @@
 </head>
 <body class="relative antialiased selection:bg-white selection:text-black">
 
-    <div id="bg-container" class="absolute inset-0 z-0">
+    <div id="bg-container" class="absolute inset-0 z-0 overflow-hidden">
         <!-- DUAS CAMADAS DE IMAGEM PARA TRANSIÇÃO SUAVE -->
         <img id="bg-img-1" class="bg-layer opacity-100" src="" alt="" decoding="async">
         <img id="bg-img-2" class="bg-layer opacity-0" src="" alt="" decoding="async">
         
         <!-- VÍDEO LOCAL MP4 -->
-        <video id="bg-video" class="bg-layer opacity-0 object-cover w-full h-full absolute inset-0 z-0 transition-opacity duration-1000" autoplay loop muted playsinline></video>
+        <video id="bg-video" class="bg-layer opacity-0 object-cover w-full h-full absolute inset-0 z-0 transition-opacity duration-1000" autoplay loop muted playsinline webkit-playsinline></video>
         
-        <!-- DUAS CAMADAS DE IFRAME PARA TRANSIÇÃO SUAVE (VIMEO/YOUTUBE) -->
-        <iframe id="bg-iframe-1" class="bg-layer opacity-0 w-full h-full absolute inset-0 z-0 transition-opacity duration-1000 pointer-events-none" style="transform: scale(1.35);" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
-        <iframe id="bg-iframe-2" class="bg-layer opacity-0 w-full h-full absolute inset-0 z-0 transition-opacity duration-1000 pointer-events-none" style="transform: scale(1.35);" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+        <!-- DUAS CAMADAS DE IFRAME PARA TRANSIÇÃO SUAVE COM A NOVA CLASSE DE COVER -->
+        <iframe id="bg-iframe-1" class="bg-layer iframe-cover opacity-0 z-0 transition-opacity duration-1000" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+        <iframe id="bg-iframe-2" class="bg-layer iframe-cover opacity-0 z-0 transition-opacity duration-1000" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
         
         <div class="overlay"></div>
     </div>
@@ -207,13 +220,13 @@
                         name: "libervita", 
                         mediaList: [
                             { type: "iframe", url: "https://player.vimeo.com/video/1232821697?background=1&autoplay=1&loop=1&byline=0&title=0" }
-                    ]
+                        ]
                     },
                     { 
                         name: "micélio", 
-                       mediaList: [
+                        mediaList: [
                             { type: "iframe", url: "https://player.vimeo.com/video/1232823704?background=1&autoplay=1&loop=1&byline=0&title=0" }
-                    ]
+                        ]
                     }
                 ]
             },
@@ -240,7 +253,6 @@
                             { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/9dd99e256645443.6ac2ae49d5eae.png", time: 2000 },
                             { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/680a43256645443.6ac2ae49d5844.png", time: 2000 },
                             { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/a0bb56256645443.6ac2ae49d4d52.png", time: 2000 }
-
                         ] 
                     },
                     {
@@ -464,6 +476,16 @@
                 nameDisplayEl.textContent = currentProj ? currentProj.name : "";
             }
         }
+        
+        // Esta função injeta mute e playsinline para garantir que roda no celular!
+        function applyMobileAutoplay(url) {
+            if (!url) return "";
+            let safeUrl = url;
+            if (!safeUrl.includes("playsinline=1")) {
+                safeUrl += safeUrl.includes("?") ? "&playsinline=1&muted=1&mute=1&autopause=0" : "?playsinline=1&muted=1&mute=1&autopause=0";
+            }
+            return safeUrl;
+        }
 
         function playMedia() {
             slideStateId++; 
@@ -474,6 +496,11 @@
             const proj = portfolioData[currentCatIndex].projects[pIndex];
             
             currentImageIndex = 0; 
+            
+            // Pausa sempre o background de video e limpa todas as camadas preventivamente
+            bgVideo.classList.remove('opacity-100'); 
+            bgVideo.classList.add('opacity-0');
+            setTimeout(() => { if (bgVideo.classList.contains('opacity-0')) bgVideo.pause(); }, 1000);
 
             // Se for lista sequencial mista (vídeos + fotos)
             if (proj.mediaList && proj.mediaList.length > 0) {
@@ -487,11 +514,6 @@
             const isVideo = !!proj.videoLocal;
             const isImage = proj.images && proj.images.length > 0;
 
-            if (!isVideo) {
-                bgVideo.classList.remove('opacity-100'); 
-                bgVideo.classList.add('opacity-0');
-                setTimeout(() => { if (bgVideo.classList.contains('opacity-0')) bgVideo.pause(); }, 1000);
-            }
             if (!isIframe) {
                 bgIframe1.classList.remove('opacity-100'); 
                 bgIframe1.classList.add('opacity-0');
@@ -553,6 +575,9 @@
         function changeIframe(url) {
             currentImageRequest++;
             const requestId = currentImageRequest;
+            
+            // Adiciona regras de playsinline para rodar em Mobile Safari
+            const safeUrl = applyMobileAutoplay(url);
 
             if (activeIframeLayer === 1) {
                 bgIframe2.onload = () => {
@@ -563,7 +588,7 @@
                     bgIframe1.classList.add('opacity-0');
                     setTimeout(() => { if(activeIframeLayer === 2) bgIframe1.src = ""; }, 1500);
                 };
-                bgIframe2.src = url;
+                bgIframe2.src = safeUrl;
                 activeIframeLayer = 2;
             } else {
                 bgIframe1.onload = () => {
@@ -574,7 +599,7 @@
                     bgIframe2.classList.add('opacity-0');
                     setTimeout(() => { if(activeIframeLayer === 1) bgIframe2.src = ""; }, 1500);
                 };
-                bgIframe1.src = url;
+                bgIframe1.src = safeUrl;
                 activeIframeLayer = 1;
             }
         }
@@ -734,6 +759,13 @@
                 handleNavigation('up'); 
             }
         }
+
+        // Função de clique em qualquer lugar ativando play para soltar qualquer bloqueio residual de touch do navegador (ajuda o autoplay mobile)
+        document.body.addEventListener('touchstart', function() {
+            if (bgVideo && bgVideo.paused && bgVideo.classList.contains('opacity-100')) {
+                bgVideo.play().catch(()=>{});
+            }
+        }, { once: true });
 
         document.addEventListener('DOMContentLoaded', () => {
             initList();
