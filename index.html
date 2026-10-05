@@ -192,6 +192,28 @@
         .nav-arrow:active {
             transform: scale(0.9);
         }
+
+        /* Animação NOVA: Tag de ação pulsando */
+        @keyframes pulse-action {
+            0% { opacity: 0.4; transform: translateX(0); }
+            50% { opacity: 1; transform: translateX(4px); }
+            100% { opacity: 0.4; transform: translateX(0); }
+        }
+        .action-tag {
+            display: inline-block;
+            opacity: 0;
+            margin-left: 10px;
+            font-size: 0.65em;
+            letter-spacing: 0.15em;
+            font-weight: 400;
+            color: rgba(255,255,255,0.8);
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        .sub-project-item.active-sub .action-tag {
+            opacity: 1;
+            animation: pulse-action 2s infinite ease-in-out;
+        }
     </style>
 </head>
 <body class="relative antialiased selection:bg-white selection:text-black">
@@ -231,6 +253,11 @@
                 <!-- Injetado via JS -->
             </ul>
         </main>
+
+        <!-- Dica de Navegação flutuante -->
+        <div id="ux-hint" class="absolute bottom-6 left-0 w-full text-center text-[0.6rem] md:text-xs tracking-[0.2em] uppercase text-white/40 pointer-events-none transition-opacity duration-1000 z-30 drop-shadow-md">
+            Dica: Clique no projeto para tela cheia
+        </div>
 
         <div class="absolute bottom-8 right-8 md:right-12 z-30 pointer-events-auto text-right">
             <div id="project-counter" class="text-sm font-light tracking-widest mb-1 shadow-black"></div>
@@ -412,6 +439,7 @@
         const portfolioText = document.getElementById('portfolio-text');
         const btnBack = document.getElementById('btn-back');
         const mediaNav = document.getElementById('media-nav');
+        const uxHint = document.getElementById('ux-hint');
 
         btnBack.addEventListener('click', exitFullscreen);
         btnBack.addEventListener('touchstart', (e) => {
@@ -441,9 +469,14 @@
                     if (isContact) {
                         liSub.classList.add('contact-item');
                         liSub.style.animationDelay = `${pIndex * 2}s`;
+                        liSub.textContent = proj.name;
+                    } else {
+                        let hasVideo = proj.iframeUrl || (proj.iframeUrls && proj.iframeUrls.length > 0) || (proj.mediaList && proj.mediaList.some(m => m.type === 'iframe'));
+                        let actionText = hasVideo ? "assistir ▶" : "explorar ✦";
+                        
+                        liSub.innerHTML = `${proj.name} <span class="action-tag">[ ${actionText} ]</span>`;
                     }
                     
-                    liSub.textContent = proj.name;
                     liSub.onclick = (e) => {
                         e.stopPropagation(); 
                         if (proj.link) {
@@ -536,7 +569,6 @@
             }
         }
 
-        // Função utilitária para pegar a lista unificada do projeto atual
         function getMediaListForProj(proj) {
             if (proj.mediaList && proj.mediaList.length > 1) return proj.mediaList;
             if (proj.iframeUrls && proj.iframeUrls.length > 1) return proj.iframeUrls;
@@ -710,12 +742,11 @@
             slideTimeout = setTimeout(() => {
                 if (stateId !== slideStateId) return;
 
-                changeMediaManually(1, false); // Avança automático
+                changeMediaManually(1, false); 
                 
             }, duration);
         }
 
-        // Função mestre de Navegação de Mídia
         function changeMediaManually(direction, isManual = true) {
             const pIndex = currentProjIndex >= 0 ? currentProjIndex : 0;
             const proj = portfolioData[currentCatIndex].projects[pIndex];
@@ -725,14 +756,12 @@
 
             if (isManual) {
                 clearTimeout(slideTimeout);
-                slideStateId++; // Invalida cronogramas antigos
+                slideStateId++; 
             }
 
-            // Atualiza o índice com suporte a loop reverso (esquerda)
             currentImageIndex = (currentImageIndex + direction + mediaList.length) % mediaList.length;
             const nextMediaData = mediaList[currentImageIndex];
 
-            // Renderiza conforme o tipo
             if (proj.mediaList && proj.mediaList.length > 1) {
                 renderMediaItem(nextMediaData);
             } else if (proj.iframeUrls && proj.iframeUrls.length > 1) {
@@ -744,11 +773,9 @@
                 changeImage(nextUrl, nextPos);
             }
             
-            // Se foi um clique manual, reinicia a contagem automática a partir de agora
             if (isManual) {
                 scheduleNextImage(slideStateId);
             } else {
-                // Se foi o sistema que chamou, apenas repete o ciclo normal
                 scheduleNextImage(slideStateId);
             }
         }
@@ -756,7 +783,7 @@
         function prevMedia() { changeMediaManually(-1); }
         function nextMedia() { changeMediaManually(1); }
 
-        /* FUNÇÕES DE TELA CHEIA */
+        /* FUNÇÕES DE TELA CHEIA E DICAS UX */
         function enterFullscreen() {
             isFullscreen = true;
             menuMain.classList.add('menu-hidden');
@@ -764,7 +791,8 @@
             portfolioText.style.opacity = '0';
             btnBack.classList.add('visible');
             
-            // Verifica se o projeto tem múltiplas mídias para mostrar as setas
+            if(uxHint) uxHint.style.opacity = '0';
+            
             const pIndex = currentProjIndex >= 0 ? currentProjIndex : 0;
             const proj = portfolioData[currentCatIndex].projects[pIndex];
             if (getMediaListForProj(proj).length > 1) {
@@ -781,16 +809,12 @@
             mediaNav.classList.add('opacity-0');
         }
 
+        // AGORA O SELECT CATEGORY APENAS AJUSTA O INDICE ZERO (OU SEJA, ENTRA NO PRIMEIRO PROJETO)
         function selectCategory(cIndex) {
             if (isFullscreen) return; 
             if (cIndex === currentCatIndex) return; 
             currentCatIndex = cIndex;
-            
-            if (portfolioData[cIndex].categoryTitle === "CONTATO") {
-                currentProjIndex = -1;
-            } else {
-                currentProjIndex = 0; 
-            }
+            currentProjIndex = 0; 
             
             if (navigator.vibrate) navigator.vibrate(30);
             
@@ -816,16 +840,41 @@
             enterFullscreen(); 
         }
 
+        // AGORA A NAVEGAÇÃO ROLA SUBTÍTULO POR SUBTÍTULO
         function handleNavigation(direction) {
             if (isAnimatingScroll || isFullscreen) return; 
-            if (direction === 'down' && currentCatIndex < portfolioData.length - 1) {
-                isAnimatingScroll = true;
-                selectCategory(currentCatIndex + 1);
-            } else if (direction === 'up' && currentCatIndex > 0) {
-                isAnimatingScroll = true;
-                selectCategory(currentCatIndex - 1);
+            
+            let nextCatIndex = currentCatIndex;
+            let nextProjIndex = currentProjIndex;
+
+            if (direction === 'down') {
+                if (nextProjIndex < portfolioData[currentCatIndex].projects.length - 1) {
+                    nextProjIndex++; // Pula para o próximo subtítulo
+                } else if (nextCatIndex < portfolioData.length - 1) {
+                    nextCatIndex++; // Se acabou os subtítulos, vai para a próxima categoria
+                    nextProjIndex = 0;
+                }
+            } else if (direction === 'up') {
+                if (nextProjIndex > 0) {
+                    nextProjIndex--; // Sobe um subtítulo
+                } else if (nextCatIndex > 0) {
+                    nextCatIndex--; // Sobe para a categoria anterior
+                    nextProjIndex = portfolioData[nextCatIndex].projects.length - 1; // Vai pro último subtítulo dela
+                }
             }
-            setTimeout(() => { isAnimatingScroll = false; }, 0); 
+
+            if (nextCatIndex !== currentCatIndex || nextProjIndex !== currentProjIndex) {
+                isAnimatingScroll = true;
+                currentCatIndex = nextCatIndex;
+                currentProjIndex = nextProjIndex;
+
+                if (navigator.vibrate) navigator.vibrate(30);
+
+                updateRoulettePosition();
+                playMedia();
+                
+                setTimeout(() => { isAnimatingScroll = false; }, 500); // 500ms para evitar pulos acidentais
+            }
         }
 
         window.addEventListener('wheel', (e) => {
@@ -866,16 +915,14 @@
             const diffY = touchEndY - touchStartY;
 
             if (isFullscreen) {
-                // Swipe horizontal para navegar entre mídias (se aplicável)
                 if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > swipeThreshold) {
                     const proj = portfolioData[currentCatIndex].projects[currentProjIndex >= 0 ? currentProjIndex : 0];
                     if (getMediaListForProj(proj).length > 1) {
-                        if (diffX > 0) prevMedia(); // Deslizou pra direita = Volta imagem
-                        else nextMedia(); // Deslizou pra esquerda = Passa imagem
+                        if (diffX > 0) prevMedia(); 
+                        else nextMedia(); 
                     }
                 }
             } else {
-                // Swipe vertical para navegar no menu principal
                 if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > swipeThreshold) {
                     if (diffY < 0) handleNavigation('down'); 
                     else handleNavigation('up'); 
