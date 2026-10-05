@@ -15,11 +15,6 @@
     <meta property="og:description" content="Portfólio audiovisual 2026">
     <meta property="og:image" content="https://ronaannn.github.io/1_2.1.1.png">
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Ronã Grangeiro | DOP">
-    <meta name="twitter:description" content="Portfólio audiovisual 2026">
-    <meta name="twitter:image" content="https://ronaannn.github.io/1_2.1.1.png">
-
     <link rel="icon" type="image/png" href="favicon.png">
 
     <link rel="preconnect" href="https://player.vimeo.com">
@@ -152,11 +147,50 @@
             inset: 0;
             background: linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.1) 100%);
             z-index: 10;
+            transition: opacity 0.8s ease-in-out;
         }
 
         .mask-vertical {
             -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 15%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 85%, rgba(0,0,0,0) 100%);
             mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 15%, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 85%, rgba(0,0,0,0) 100%);
+        }
+
+        /* Classes para a transição de Tela Cheia */
+        #menu-main {
+            transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease;
+        }
+        .menu-hidden {
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .overlay-hidden {
+            opacity: 0 !important;
+        }
+        
+        /* Botão de Voltar */
+        #btn-back {
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            transform: translateX(20px);
+        }
+        #btn-back.visible {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            transform: translateX(0);
+            cursor: pointer;
+        }
+        
+        /* Controles de Navegação (Setas) */
+        .nav-arrow {
+            transition: all 0.3s ease;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .nav-arrow:hover {
+            transform: scale(1.1);
+        }
+        .nav-arrow:active {
+            transform: scale(0.9);
         }
     </style>
 </head>
@@ -171,25 +205,36 @@
         <iframe id="bg-iframe-1" class="bg-layer iframe-cover opacity-0 z-0 transition-opacity duration-1000" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
         <iframe id="bg-iframe-2" class="bg-layer iframe-cover opacity-0 z-0 transition-opacity duration-1000" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
         
-        <div class="overlay"></div>
+        <div id="bg-overlay" class="overlay"></div>
+    </div>
+
+    <!-- Header fixo para o texto Portfólio / Nome -->
+    <header class="p-8 md:p-12 absolute top-0 left-0 w-full flex justify-between items-center z-[60] pointer-events-none">
+        <div class="text-xs tracking-[0.3em] uppercase font-light pointer-events-auto">Ronã <br> <span class="font-bold">Grangeiro</span></div>
+        <div id="portfolio-text" class="text-xs tracking-widest uppercase font-light transition-opacity duration-500 pointer-events-auto">Portfólio</div>
+    </header>
+
+    <!-- Botão Voltar -->
+    <button id="btn-back" class="absolute top-8 right-8 md:top-12 md:right-12 z-[70] flex items-center text-xs tracking-widest uppercase font-light text-white hover:text-gray-400 opacity-0 pointer-events-none">
+        <span class="mr-2 text-lg">&larr;</span> Voltar
+    </button>
+
+    <!-- Controles Manuais (Aparecem em Tela Cheia) -->
+    <div id="media-nav" class="absolute inset-0 z-[50] flex items-center justify-between px-2 md:px-8 pointer-events-none opacity-0 transition-opacity duration-500">
+        <button class="nav-arrow text-white/40 hover:text-white text-5xl p-4 md:p-8 pointer-events-auto" onclick="prevMedia()">&#10094;</button>
+        <button class="nav-arrow text-white/40 hover:text-white text-5xl p-4 md:p-8 pointer-events-auto" onclick="nextMedia()">&#10095;</button>
     </div>
 
     <div class="relative z-20 w-full h-full flex flex-col pointer-events-none">
-        
-        <header class="p-8 md:p-12 absolute top-0 left-0 w-full flex justify-between items-center z-30 pointer-events-auto">
-            <div class="text-xs tracking-[0.3em] uppercase font-light">Ronã <br> <span class="font-bold">Grangeiro</span></div>
-            <div class="text-xs tracking-widest uppercase font-light">Portfólio</div>
-        </header>
-
-        <main class="flex-1 relative w-full md:w-2/3 h-full mask-vertical z-20">
+        <main id="menu-main" class="flex-1 relative w-full md:w-2/3 h-full mask-vertical z-20 pointer-events-none mt-20">
             <ul id="roulette-list" class="pointer-events-auto">
                 <!-- Injetado via JS -->
             </ul>
         </main>
 
         <div class="absolute bottom-8 right-8 md:right-12 z-30 pointer-events-auto text-right">
-            <div id="project-counter" class="text-sm font-light tracking-widest mb-1"></div>
-            <div id="project-name-display" class="text-xs text-gray-400 tracking-[0.2em] uppercase"></div>
+            <div id="project-counter" class="text-sm font-light tracking-widest mb-1 shadow-black"></div>
+            <div id="project-name-display" class="text-xs text-gray-400 tracking-[0.2em] uppercase drop-shadow-md"></div>
         </div>
     </div>
 
@@ -209,14 +254,7 @@
                         mediaList: [
                             { type: "iframe", url: "https://player.vimeo.com/video/1232823704?background=1&autoplay=1&loop=1&byline=0&title=0" }
                         ]
-                    },
-                    { 
-                        name: "giro loco", 
-                        mediaList: [
-                            { type: "iframe", url: "https://player.vimeo.com/video/1232853760?background=1&autoplay=1&loop=1&byline=0&title=0" }
-                        ]
                     }
-                    
                 ]
             },
             {
@@ -238,26 +276,25 @@
                     { 
                         name: "sonhos", 
                         mediaList: [
-                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/2fce00256645443.6ac2de1fa1465.png", time: 1800, position: "65% center" },
+                            { type: "iframe", url: "https://player.vimeo.com/video/1232816820?background=1&autoplay=1&loop=1&byline=0&title=0", time: 1800 },
+                            { type: "iframe", url: "https://player.vimeo.com/video/1232818057?background=1&autoplay=1&loop=1&byline=0&title=0", time: 2000 },
                             { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/abe8af256645443.6ac2ae49d470b.png", time: 2000 },
-                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/1f5756256645443.6ac2ae49d5288.png", time: 2000, position: "80% center" },
-                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/9dd99e256645443.6ac2ae49d5eae.png", time: 2000, position: "10% center" }
-
+                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/1f5756256645443.6ac2ae49d5288.png", time: 2000 },
+                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/9dd99e256645443.6ac2ae49d5eae.png", time: 2000 },
+                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/680a43256645443.6ac2ae49d5844.png", time: 2000 },
+                            { type: "image", url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/a0bb56256645443.6ac2ae49d4d52.png", time: 2000 }
                         ] 
                     },
                     {
                         name: "matando",
                         images: [
-                            ""
+                            "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=60&w=1280&auto=format&fit=crop"
                         ]
                     },
                     {
                         name: "supercurta",
-                        images: [
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/fs/c97d41256649613.6ac2e295d11c4.png", time: 2000 },
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_webp/6560ee256649613.6ac2e1d296737.png", time: 2000},
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_webp/f88428256649613.6ac2e1d296ba4.png", time: 2000 }
-
+                        iframeUrls: [
+                            { url: "https://player.vimeo.com/video/1232808341?background=1&autoplay=1&loop=1&byline=0&title=0", time: 2000 }
                         ]
                     },
                     {
@@ -274,32 +311,45 @@
                     { 
                         name: "kyan", 
                         images: [
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d04585214797941.675ee8bae7825.jpg", time: 2000 },
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d9e3a7214797941.675ee8bae7da0.jpg", time: 2000 }, 
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/083b49214797941.675ee8baea749.jpg", time: 2000, position: "75% center" },
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/4886bc214797941.675ee8baea0ee.jpg", time: 2000, position: "25% center" },
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/e46f92214797941.675ee8bae82f7.jpg", time: 2000}
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d04585214797941.675ee8bae7825.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/d9e3a7214797941.675ee8bae7da0.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/083b49214797941.675ee8baea749.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/4886bc214797941.675ee8baea0ee.jpg",
+                            "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/e46f92214797941.675ee8bae82f7.jpg"
                         ] 
                     },
                     { 
                         name: "matuê", 
-                        images: [   
+                        images: [
                             "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/0b246a228875229.685ac730a5e63.jpg",
                             "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/b3c8da228875229.685ac730a501c.jpeg"
                         ] 
                     },
                     { 
                         name: "sá e guarabyra", 
-                        // AQUI ESTÁ A CORREÇÃO: As imagens foram transformadas em objetos com 'position'
                         images: [
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/a268db228219853.684f7786821cd.jpg", time: 3000, position: "80% center" },
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/05f3e0228219853.684f778680c1e.jpg", time: 3000, position: "70% center" },
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/7097de228219853.684f7786845cf.jpg", time: 3000, position: "30% center" },
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/cd2a65228219853.684f778684d70.jpg", time: 3000, position: "80% center" },
-                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/18a07f228219853.684f778681293.jpg", time: 3000, position: "80% center" }
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/a268db228219853.684f7786821cd.jpg", position: "80% center" },
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/05f3e0228219853.684f778680c1e.jpg", position: "80% center" },
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/7097de228219853.684f7786845cf.jpg", position: "80% center" },
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/cd2a65228219853.684f778684d70.jpg", position: "80% center" },
+                            { url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/18a07f228219853.684f778681293.jpg", position: "80% center" }
                         ]
                     },
-
+                    { 
+                        name: "yunk vino", 
+                        images: [
+                            { url: "VINO.gif", time: 3000 },
+                            { url: "VINO_1.jpg", time: 3000 },
+                            { url: "VINO_2.jpg", time: 3000 }
+                        ]
+                    },
+                    { 
+                        name: "danzo", 
+                        images: [
+                            { url: "DANZO_1.jpg", time: 3000 },
+                            { url: "DANZO_2.jpg", time: 3000 }
+                        ]
+                    }
                 ] 
             }, 
             {
@@ -308,8 +358,8 @@
                     { 
                         name: "pertencer", 
                         images: [
-                            "",
-                            ""
+                            "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=60&w=1280&auto=format&fit=crop",
+                            "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=60&w=1280&auto=format&fit=crop"
                         ] 
                     }
                 ]
@@ -343,6 +393,7 @@
         let activeIframeLayer = 1;
         let slideTimeout; 
         let isAnimatingScroll = false;
+        let isFullscreen = false; 
 
         let currentImageRequest = 0;
         let slideStateId = 0;
@@ -355,6 +406,18 @@
         const bgIframe2 = document.getElementById('bg-iframe-2');
         const counterEl = document.getElementById('project-counter');
         const nameDisplayEl = document.getElementById('project-name-display');
+        
+        const menuMain = document.getElementById('menu-main');
+        const bgOverlay = document.getElementById('bg-overlay');
+        const portfolioText = document.getElementById('portfolio-text');
+        const btnBack = document.getElementById('btn-back');
+        const mediaNav = document.getElementById('media-nav');
+
+        btnBack.addEventListener('click', exitFullscreen);
+        btnBack.addEventListener('touchstart', (e) => {
+            e.preventDefault(); 
+            exitFullscreen();
+        }, { passive: false });
 
         function initList() {
             portfolioData.forEach((cat, cIndex) => {
@@ -383,16 +446,15 @@
                     liSub.textContent = proj.name;
                     liSub.onclick = (e) => {
                         e.stopPropagation(); 
-                        
                         if (proj.link) {
                             if (proj.link.startsWith('mailto:')) {
                                 window.location.href = proj.link;
                             } else {
                                 window.open(proj.link, '_blank');
                             }
+                        } else {
+                            selectProject(cIndex, pIndex);
                         }
-                        
-                        selectProject(cIndex, pIndex);
                     };
                     ulSub.appendChild(liSub);
                 });
@@ -472,6 +534,14 @@
                 }
                 return url;
             }
+        }
+
+        // Função utilitária para pegar a lista unificada do projeto atual
+        function getMediaListForProj(proj) {
+            if (proj.mediaList && proj.mediaList.length > 1) return proj.mediaList;
+            if (proj.iframeUrls && proj.iframeUrls.length > 1) return proj.iframeUrls;
+            if (proj.images && proj.images.length > 1) return proj.images;
+            return [];
         }
 
         function playMedia() {
@@ -620,9 +690,7 @@
             const pIndex = currentProjIndex >= 0 ? currentProjIndex : 0;
             const proj = portfolioData[currentCatIndex].projects[pIndex];
             
-            const hasMultiple = (proj.mediaList && proj.mediaList.length > 1) ||
-                                (proj.images && proj.images.length > 1) || 
-                                (proj.iframeUrls && proj.iframeUrls.length > 1);
+            const hasMultiple = getMediaListForProj(proj).length > 1;
 
             if (hasMultiple) {
                 scheduleNextImage(slideStateId);
@@ -633,20 +701,7 @@
             const pIndex = currentProjIndex >= 0 ? currentProjIndex : 0;
             const proj = portfolioData[currentCatIndex].projects[pIndex];
             
-            let mediaList = [];
-            let isMediaListMode = false;
-            let isIframeMode = false;
-
-            if (proj.mediaList && proj.mediaList.length > 1) {
-                mediaList = proj.mediaList;
-                isMediaListMode = true;
-            } else if (proj.iframeUrls && proj.iframeUrls.length > 1) {
-                mediaList = proj.iframeUrls;
-                isIframeMode = true;
-            } else if (proj.images && proj.images.length > 1) {
-                mediaList = proj.images;
-            }
-
+            const mediaList = getMediaListForProj(proj);
             if (!mediaList || mediaList.length <= 1) return;
 
             const currentMediaData = mediaList[currentImageIndex];
@@ -655,25 +710,79 @@
             slideTimeout = setTimeout(() => {
                 if (stateId !== slideStateId) return;
 
-                currentImageIndex = (currentImageIndex + 1) % mediaList.length;
-                const nextMediaData = mediaList[currentImageIndex];
-
-                if (isMediaListMode) {
-                    renderMediaItem(nextMediaData);
-                } else if (isIframeMode) {
-                    const nextUrl = typeof nextMediaData === 'string' ? nextMediaData : nextMediaData.url;
-                    changeIframe(nextUrl);
-                } else {
-                    const nextUrl = typeof nextMediaData === 'string' ? nextMediaData : nextMediaData.url;
-                    const nextPos = typeof nextMediaData === 'object' && nextMediaData.position ? nextMediaData.position : 'center';
-                    changeImage(nextUrl, nextPos);
-                }
+                changeMediaManually(1, false); // Avança automático
                 
-                scheduleNextImage(stateId); 
             }, duration);
         }
 
+        // Função mestre de Navegação de Mídia
+        function changeMediaManually(direction, isManual = true) {
+            const pIndex = currentProjIndex >= 0 ? currentProjIndex : 0;
+            const proj = portfolioData[currentCatIndex].projects[pIndex];
+            
+            const mediaList = getMediaListForProj(proj);
+            if (!mediaList || mediaList.length <= 1) return;
+
+            if (isManual) {
+                clearTimeout(slideTimeout);
+                slideStateId++; // Invalida cronogramas antigos
+            }
+
+            // Atualiza o índice com suporte a loop reverso (esquerda)
+            currentImageIndex = (currentImageIndex + direction + mediaList.length) % mediaList.length;
+            const nextMediaData = mediaList[currentImageIndex];
+
+            // Renderiza conforme o tipo
+            if (proj.mediaList && proj.mediaList.length > 1) {
+                renderMediaItem(nextMediaData);
+            } else if (proj.iframeUrls && proj.iframeUrls.length > 1) {
+                const nextUrl = typeof nextMediaData === 'string' ? nextMediaData : nextMediaData.url;
+                changeIframe(nextUrl);
+            } else {
+                const nextUrl = typeof nextMediaData === 'string' ? nextMediaData : nextMediaData.url;
+                const nextPos = typeof nextMediaData === 'object' && nextMediaData.position ? nextMediaData.position : 'center';
+                changeImage(nextUrl, nextPos);
+            }
+            
+            // Se foi um clique manual, reinicia a contagem automática a partir de agora
+            if (isManual) {
+                scheduleNextImage(slideStateId);
+            } else {
+                // Se foi o sistema que chamou, apenas repete o ciclo normal
+                scheduleNextImage(slideStateId);
+            }
+        }
+
+        function prevMedia() { changeMediaManually(-1); }
+        function nextMedia() { changeMediaManually(1); }
+
+        /* FUNÇÕES DE TELA CHEIA */
+        function enterFullscreen() {
+            isFullscreen = true;
+            menuMain.classList.add('menu-hidden');
+            bgOverlay.classList.add('overlay-hidden');
+            portfolioText.style.opacity = '0';
+            btnBack.classList.add('visible');
+            
+            // Verifica se o projeto tem múltiplas mídias para mostrar as setas
+            const pIndex = currentProjIndex >= 0 ? currentProjIndex : 0;
+            const proj = portfolioData[currentCatIndex].projects[pIndex];
+            if (getMediaListForProj(proj).length > 1) {
+                mediaNav.classList.remove('opacity-0');
+            }
+        }
+
+        function exitFullscreen() {
+            isFullscreen = false;
+            menuMain.classList.remove('menu-hidden');
+            bgOverlay.classList.remove('overlay-hidden');
+            portfolioText.style.opacity = '1';
+            btnBack.classList.remove('visible');
+            mediaNav.classList.add('opacity-0');
+        }
+
         function selectCategory(cIndex) {
+            if (isFullscreen) return; 
             if (cIndex === currentCatIndex) return; 
             currentCatIndex = cIndex;
             
@@ -692,7 +801,10 @@
         }
 
         function selectProject(cIndex, pIndex) {
-            if (cIndex === currentCatIndex && pIndex === currentProjIndex) return;
+            if (cIndex === currentCatIndex && pIndex === currentProjIndex) {
+                enterFullscreen();
+                return;
+            }
             
             currentCatIndex = cIndex;
             currentProjIndex = pIndex;
@@ -701,10 +813,11 @@
 
             updateRoulettePosition();
             playMedia();
+            enterFullscreen(); 
         }
 
         function handleNavigation(direction) {
-            if (isAnimatingScroll) return;
+            if (isAnimatingScroll || isFullscreen) return; 
             if (direction === 'down' && currentCatIndex < portfolioData.length - 1) {
                 isAnimatingScroll = true;
                 selectCategory(currentCatIndex + 1);
@@ -721,28 +834,52 @@
         });
 
         window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowDown') handleNavigation('down');
-            if (e.key === 'ArrowUp') handleNavigation('up');
+            if (isFullscreen) {
+                if (e.key === 'Escape') exitFullscreen(); 
+                if (e.key === 'ArrowLeft') prevMedia();
+                if (e.key === 'ArrowRight') nextMedia();
+            } else {
+                if (e.key === 'ArrowDown') handleNavigation('down');
+                if (e.key === 'ArrowUp') handleNavigation('up');
+            }
         });
 
+        let touchStartX = 0;
         let touchStartY = 0;
+        let touchEndX = 0;
         let touchEndY = 0;
 
         window.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].clientX;
             touchStartY = e.changedTouches[0].clientY;
         }, { passive: true });
 
         window.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].clientX;
             touchEndY = e.changedTouches[0].clientY;
             handleGesture();
         }, { passive: true });
 
         function handleGesture() {
             const swipeThreshold = 40; 
-            if (touchEndY < touchStartY - swipeThreshold) {
-                handleNavigation('down'); 
-            } else if (touchEndY > touchStartY + swipeThreshold) {
-                handleNavigation('up'); 
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+
+            if (isFullscreen) {
+                // Swipe horizontal para navegar entre mídias (se aplicável)
+                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > swipeThreshold) {
+                    const proj = portfolioData[currentCatIndex].projects[currentProjIndex >= 0 ? currentProjIndex : 0];
+                    if (getMediaListForProj(proj).length > 1) {
+                        if (diffX > 0) prevMedia(); // Deslizou pra direita = Volta imagem
+                        else nextMedia(); // Deslizou pra esquerda = Passa imagem
+                    }
+                }
+            } else {
+                // Swipe vertical para navegar no menu principal
+                if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > swipeThreshold) {
+                    if (diffY < 0) handleNavigation('down'); 
+                    else handleNavigation('up'); 
+                }
             }
         }
 
@@ -762,7 +899,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initList();
-            
             updateRoulettePosition();
             playMedia();
         });
